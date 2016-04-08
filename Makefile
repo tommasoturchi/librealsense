@@ -12,7 +12,14 @@ endif
 LIBUSB_FLAGS := `pkg-config --cflags --libs libusb-1.0`
 
 CFLAGS := -std=c11 -fPIC -pedantic -DRS_USE_$(BACKEND)_BACKEND $(LIBUSB_FLAGS) 
-CXXFLAGS := -std=c++11 -fPIC -pedantic -mssse3 -Ofast -Wno-missing-field-initializers
+CXXFLAGS := -std=c++11 -fPIC -pedantic -Ofast -Wno-missing-field-initializers
+
+# Don't use ssse3 if on ARM
+UNAME_P := $(shell uname -p)
+ifneq ($(filter arm%,$(UNAME_P)),)
+        CXXFLAGS += -mssse3 
+endif
+
 CXXFLAGS += -Wno-switch -Wno-multichar -DRS_USE_$(BACKEND)_BACKEND $(LIBUSB_FLAGS) 
 
 # Add specific include paths for OSX
