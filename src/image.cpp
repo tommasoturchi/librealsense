@@ -218,7 +218,10 @@ namespace rsimpl
 			auto ptrIn = reinterpret_cast<const uint8_t *>(s);
 			auto ptrOut = reinterpret_cast<uint8_t *>(d[0]);
 
-			for (int i = 0; i < n / 2; ++i)
+			int k = 0;
+			int d_size = sizeof(d)/sizeof(*d);
+
+			for (int i = 0; i < n / 2 && k < d_size; ++i)
 			{
 				uint8_t y0 = ptrIn[0];
 				uint8_t u0 = ptrIn[1];
@@ -228,14 +231,14 @@ namespace rsimpl
 				int c = y0 - 16;
 				int d = u0 - 128;
 				int e = v0 - 128;
-				ptrOut[0] = clamp_byte((128 + 298 * c + 409 * e) >> 8); // red
-				ptrOut[1] = clamp_byte((128 + 298 * c - 100 * d - 208 * e) >> 8); // green
-				ptrOut[2] = clamp_byte((128 + 298 * c + 516 * d) >> 8); // blue
+				ptrOut[k + 0] = clamp_byte((128 + 298 * c + 409 * e) >> 8); // red
+				ptrOut[k + 1] = clamp_byte((128 + 298 * c - 100 * d - 208 * e) >> 8); // green
+				ptrOut[k + 2] = clamp_byte((128 + 298 * c + 516 * d) >> 8); // blue
 				c = y1 - 16;
-				ptrOut[3] = clamp_byte((128 + 298 * c + 409 * e) >> 8); // red
-				ptrOut[4] = clamp_byte((128 + 298 * c - 100 * d - 208 * e) >> 8); // green
-				ptrOut[5] = clamp_byte((128 + 298 * c + 516 * d) >> 8); // blue
-				ptrOut += 6;
+				ptrOut[k + 3] = clamp_byte((128 + 298 * c + 409 * e) >> 8); // red
+				ptrOut[k + 4] = clamp_byte((128 + 298 * c - 100 * d - 208 * e) >> 8); // green
+				ptrOut[k + 5] = clamp_byte((128 + 298 * c + 516 * d) >> 8); // blue
+				k += 6;
 			}
 		}
 #endif // !__arm__
