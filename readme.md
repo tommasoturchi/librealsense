@@ -12,5 +12,9 @@ Comprehensive platform-specific installation instructions are [available here](h
 ## Troubleshooting
 Every time the video streams are opened, the USB port needs to be reset. So far, I haven't found an elegant way of resetting the USB port via software and I had to resort to physically unplugging/replugging the USB3 port after every use. If you've been able to build this successfully under ARM but have problems getting the examples to work, try unplugging/replugging your RealSense sensor a few times. Also, running the examples with `sudo` privileges will output a more detailed error code when the examples fail to run.
 
+## Contribution and Support
+If you have fixed an issue, do not hesitate to submit pull requests! They are greatly appreciated.
+If you find this repository useful, kindly give it stars! It helps others to know this code works.
+
 ## License
 Refer to the [original repository](https://github.com/IntelRealSense/librealsense) for licensing information.
