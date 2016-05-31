@@ -14,11 +14,12 @@ LIBUSB_FLAGS := `pkg-config --cflags --libs libusb-1.0`
 CFLAGS := -std=c11 -fPIC -pedantic -DRS_USE_$(BACKEND)_BACKEND $(LIBUSB_FLAGS) 
 CXXFLAGS := -std=c++11 -fPIC -pedantic -Ofast -Wno-missing-field-initializers
 
-# Don't use ssse3 if on ARM
-UNAME_P := $(shell uname -p)
-ifneq ($(filter arm%,$(UNAME_P)),)
-        CXXFLAGS += -mssse3 
-endif
+# Use SSE if feature is available
+cpufeature = $(if $(findstring $(1),$(shell cat /proc/cpuinfo)),$(2))
+PARAMS_SSE = $(call cpufeature,sse,-msse) $(call cpufeature,sse2,-msse2) $(call cpufeature,sse3,-msse3) \
+ $(call cpufeature,sse4,-msse4) $(call cpufeature,sse4_1,-msse4.1) \
+$(call cpufeature,sse4_2,-msse4.2) -mfpmath=sse 
+
 
 CXXFLAGS += -Wno-switch -Wno-multichar -DRS_USE_$(BACKEND)_BACKEND $(LIBUSB_FLAGS) 
 
