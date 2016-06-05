@@ -9,9 +9,9 @@
 #include <algorithm>
 
 #ifndef __arm__
-	#include <tmmintrin.h> // For SSE3 intrinsics used in unpack_yuy2_sse
+    #include <tmmintrin.h> // For SSE3 intrinsics used in unpack_yuy2_sse
 #else
-	inline uint8_t clamp_byte(int v) { return v < 0 ? 0 : v > 255 ? 255 : v; }
+    inline uint8_t clamp_byte(int v) { return v < 0 ? 0 : v > 255 ? 255 : v; }
 #endif
 
 #pragma pack(push, 1) // All structs in this file are assumed to be byte-packed
@@ -210,38 +210,35 @@ namespace rsimpl
                     _mm_storeu_si128(dst++, _mm_alignr_epi8(bgr3, bgr2, 12));                
                 }
             }
-        }
+        }    
 #else
-		// Currently only YUY2 to RGB8 is implemented for ARM.
-		if (FORMAT == RS_FORMAT_RGB8)
-		{
-			auto ptrIn = reinterpret_cast<const uint8_t *>(s);
-			auto ptrOut = reinterpret_cast<uint8_t *>(d[0]);
+        // Currently only YUY2 to RGB8 is implemented for ARM.
+        if (FORMAT == RS_FORMAT_RGB8)
+        {
+            auto ptrIn = reinterpret_cast<const uint8_t *>(s);
+            auto ptrOut = reinterpret_cast<uint8_t *>(d[0]);
 
-			int k = 0;
-			int d_size = sizeof(d)/sizeof(*d);
-
-			for (int i = 0; i < n / 2 && k < d_size; ++i)
-			{
-				uint8_t y0 = ptrIn[0];
-				uint8_t u0 = ptrIn[1];
-				uint8_t y1 = ptrIn[2];
-				uint8_t v0 = ptrIn[3];
-				ptrIn += 4;
-				int c = y0 - 16;
-				int d = u0 - 128;
-				int e = v0 - 128;
-				ptrOut[k + 0] = clamp_byte((128 + 298 * c + 409 * e) >> 8); // red
-				ptrOut[k + 1] = clamp_byte((128 + 298 * c - 100 * d - 208 * e) >> 8); // green
-				ptrOut[k + 2] = clamp_byte((128 + 298 * c + 516 * d) >> 8); // blue
-				c = y1 - 16;
-				ptrOut[k + 3] = clamp_byte((128 + 298 * c + 409 * e) >> 8); // red
-				ptrOut[k + 4] = clamp_byte((128 + 298 * c - 100 * d - 208 * e) >> 8); // green
-				ptrOut[k + 5] = clamp_byte((128 + 298 * c + 516 * d) >> 8); // blue
-				k += 6;
-			}
-		}
-#endif // !__arm__
+            for (int i = 0; i < n / 2; ++i)
+            {
+                uint8_t y0 = ptrIn[0];
+                uint8_t u0 = ptrIn[1];
+                uint8_t y1 = ptrIn[2];
+                uint8_t v0 = ptrIn[3];
+                ptrIn += 4;
+                int c = y0 - 16;
+                int d = u0 - 128;
+                int e = v0 - 128;
+                ptrOut[0] = clamp_byte((128 + 298 * c + 409 * e) >> 8); // red
+                ptrOut[1] = clamp_byte((128 + 298 * c - 100 * d - 208 * e) >> 8); // green
+                ptrOut[2] = clamp_byte((128 + 298 * c + 516 * d) >> 8); // blue
+                c = y1 - 16;
+                ptrOut[3] = clamp_byte((128 + 298 * c + 409 * e) >> 8); // red
+                ptrOut[4] = clamp_byte((128 + 298 * c - 100 * d - 208 * e) >> 8); // green
+                ptrOut[5] = clamp_byte((128 + 298 * c + 516 * d) >> 8); // blue
+                ptrOut += 6;
+            }
+        }
+#endif
     }
     
     //////////////////////////////////////
