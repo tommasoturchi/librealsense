@@ -8,7 +8,7 @@
 #include <cmath>
 #include <algorithm>
 
-#ifndef __arm__
+#ifndef __aarch64___
     #include <tmmintrin.h> // For SSE3 intrinsics used in unpack_yuy2_sse
 #else
     inline uint8_t clamp_byte(int v) { return v < 0 ? 0 : v > 255 ? 255 : v; }
@@ -68,7 +68,7 @@ namespace rsimpl
     // It is expected that all branching outside of the loop control variable will be removed due to constant-folding.
     template<rs_format FORMAT> void unpack_yuy2(byte * const d [], const byte * s, int n)
     {
-#ifndef __arm__
+#ifndef __aarch64___
         assert(n % 16 == 0); // All currently supported color resolutions are multiples of 16 pixels. Could easily extend support to other resolutions by copying final n<16 pixels into a zero-padded buffer and recursively calling self for final iteration.
         auto src = reinterpret_cast<const __m128i *>(s);
         auto dst = reinterpret_cast<__m128i *>(d[0]);
